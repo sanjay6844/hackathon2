@@ -62,6 +62,19 @@ const getAllRequetUser = () => (dispatch) => {
     });
 };
 
+const fetchUsers = () => (dispatch) => {
+  dispatch(assignToDashboardStore("get_Posts", null));
+  return nw
+  
+    .then((response) => {
+      dispatch(assignToDashboardStore("testData", response?.data));
+    })
+    .catch((error) => {
+      setApiError(dispatch, assignToDashboardStore, error);
+    });
+};
+
+
 // Routing
 
 // Reducers

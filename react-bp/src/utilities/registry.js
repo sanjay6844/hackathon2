@@ -2,6 +2,7 @@
 import Home from "Pages/Home";
 import Login from "Pages/Login/login";
 import Signup from "Pages/Signup/signup";
+import Header from  "Components/Header/Header"
 
 function Injector(component, name) {
   const hoc = component;
@@ -14,4 +15,5 @@ export default {
   Login: Injector(Login, "Login"),
   Signup: Injector(Signup,"Signup"),
   Home: Injector(Home, "Home"),
+  Header:Injector(Header,"Header")
 };

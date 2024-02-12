@@ -3,13 +3,13 @@ import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import {PrivateRoute,AuthRoute} from "./authRoute"
 
 const fetchRoutes = (containers) => {
-  const { Home, Login, Signup } = containers;
+  const { Home, Login, Signup,Header } = containers;
 
   return function Routes() {
     const Layout = () => (
       <>
-        {/* <Header /> */}
-        <div> Header </div>
+        <Header />
+        {/* <div> Header </div> */}
         <Outlet />
       </>
     );
