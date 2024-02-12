@@ -6,7 +6,7 @@ const AuthRoute = ({ Element }) => {
   const acctoken = cookie.load("currentuser");
   console.log(acctoken, "currentuser");
   if (!acctoken || acctoken === undefined) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/" />;
   }
   return Element;
 };
@@ -15,7 +15,7 @@ const PrivateRoute = ({ Element }) => {
   const acctoken = cookie.load("currentuser");
   console.log(acctoken, "currentuser");
   if (acctoken || acctoken !== undefined) {
-    return <Navigate to="/sales" />;
+    return <Navigate to="/home" />;
   }
   return Element;
 };

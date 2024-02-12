@@ -1,9 +1,9 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
-// import {PrivateRoute,AuthRoute} from "./authRoute"
+import {PrivateRoute,AuthRoute} from "./authRoute"
 
 const fetchRoutes = (containers) => {
-  const { Home,Header } = containers;
+  const { Home, Login, Signup,Header } = containers;
 
   return function Routes() {
     const Layout = () => (
@@ -17,32 +17,24 @@ const fetchRoutes = (containers) => {
     const createRoutes = () => {
       return createBrowserRouter([
         {
+          path: "/signup",
+          element: <PrivateRoute Element={<Signup />} />,
+          errorElement: <div>404 No Page Found</div>,
+        },
+        {
+          path: "/",
+          element: <PrivateRoute Element={<Login />} />,
+          errorElement: <div>404 No Page Found</div>,
+        },
+        {
           element: <Layout />,
           errorElement: <div>404 No Page Found</div>,
           children: [
             {
               path: "/home",
-              // with authroute
-              // element: <AuthRoute Element={<Home />} />,
-              // without authRoute
-              element: <Home />,
+              element: <AuthRoute Element={<Home />} />,
             },
           ],
-        },
-        {
-          path: "/login",
-          // with authroute
-          // element: <PrivateRoute Element={<Home />} />
-          // without authRoute
-          element: <Home />,
-        },
-
-        {
-          path: "/signup",
-          // with authroute
-          // element: <PrivateRoute Element={<Home />} />
-          // without authRoute
-          element: <Home />,
         },
       ]);
     };

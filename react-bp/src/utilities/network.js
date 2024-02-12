@@ -69,7 +69,7 @@ Network.prototype.api = function (url) {
 
 const replacePathParams = (url, params) => {
   params.forEach((p, index) => {
-    if (url.indexOf("path" + (index + 1)) > -1) {
+    if (url?.indexOf("path" + (index + 1)) > -1) {
       url = url.replace("path" + (index + 1), p);
     } else {
       url += `/${p}`;
