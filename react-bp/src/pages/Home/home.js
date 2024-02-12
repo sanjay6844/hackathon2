@@ -8,11 +8,12 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import Divider from "@mui/material/Divider";
 import GraphicEqIcon from "@mui/icons-material/GraphicEq";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import Cookies from "js-cookie";
 
 const Homepage = () => {
   const ctx = useContext(RefContext);
   const { store, actions } = ctx;
-  const { songs } =store;
+  const { songs,users } =store;
   const { fetchSongs } = actions
   console.log(songs, "songs");
   const [song, setsong] = useState(null);
@@ -21,7 +22,10 @@ const Homepage = () => {
   useEffect(()=>{
     fetchSongs()
   }, [])
-
+  const [LoggedInUser,setLoggedInUser] = useState(JSON.parse(Cookies.get("currentuser")))
+  // const LoggedInUser = Cookies.get("currentuser")
+  // let logedinusers = JSON.parse(LoggedInUser)
+  // console.log(logedinusers)
   // console.log(ctx, "ctx");
   
   const storesongDetail = (url,name) =>{
@@ -46,16 +50,20 @@ const Homepage = () => {
           />
         </div>
         <div className="title">Playlist</div>
-        {songs?.map((songs,index) => 
-          <>
-            <div key={index} className="likedsongdesign">
-              <div className="likedsonglist"><MusicNoteIcon style={{padding:"10px", borderRadius:"25px", border:"1px solid gray", fontSize:"20px",color:"white", background:"#9147ff"}} /></div>
-              <div className="SongTitle">{songs.songName}</div>
-              <div className="playbutton"><PlayArrowIcon style={{fontSize:"40px", cursor:"pointer"}} onClick={() => storesongDetail(songs.url, songs.songName) } /></div>
-              <div><FavoriteIcon  onClick={() => setLiked(true)} style={{color: isliked ? "red" : "black", fontSize:"30px",cursor:"pointer"}} /></div>
-            </div> 
-            <Divider />
-          </> )}
+        {songs?.map((song,index) => {
+          if(LoggedInUser.upload.includes(song.id)&&song.show){
+            return(
+              <>
+                <div key={index} className="likedsongdesign">
+                  <div className="likedsonglist"><MusicNoteIcon style={{padding:"10px", borderRadius:"25px", border:"1px solid gray", fontSize:"20px",color:"white", background:"#9147ff"}} /></div>
+                  <div className="SongTitle">{song.songName}</div>
+                  <div className="playbutton"><PlayArrowIcon style={{fontSize:"40px", cursor:"pointer"}} onClick={() => storesongDetail(song.url, song.songName) } /></div>
+                  <div><FavoriteIcon  onClick={() => setLiked(true)} style={{color: isliked ? "red" : "black", fontSize:"30px",cursor:"pointer"}} /></div>
+                </div> 
+                <Divider />
+              </> 
+            )}}
+        )}
         
       </div>
      
