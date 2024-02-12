@@ -1,5 +1,5 @@
-import React from "react";
-import { useState } from "react";
+import React, { useEffect } from "react";
+import { useState,useContext } from "react";
 import "./Header.css"
 import AddIcon from "@mui/icons-material/Add";
 import Dialog from "@mui/material/Dialog";
@@ -12,6 +12,11 @@ import { ToastContainer,toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Switch from "@mui/material/Switch";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import { TextField } from "@mui/material";
+import uniqid from "uniqid";
+import RefContext from "Utilities/refContext";
+import {openDB} from "idb"
+import Cookies from "js-cookie";
 
 
 
@@ -19,13 +24,20 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 
 // import { Button } from "@mui/base";
 import { UploadOutlined } from "@ant-design/icons";
+import { uniqueId } from "lodash";
 // import { Button, message, Upload } from "antd";
-const Header= ()=>{
+const Header= (data)=>{
   const [dialog,setDialog] = useState(false)
   const [audioUrl,setAudioUrl] = useState(null)
   const [upload,setUpload] = useState(false)
   const [songPrivate,setSongPrivate] = useState(false)
+  const [songInput,setSongInput] = useState("")
+  const [songName,setSongName] = useState("")
+  const loggedInUser = Cookies.get("currentuser")
 
+  useEffect(()=>{
+    console.log(data)
+  },[])
   const handleUpload = ()=>{
     setDialog(true)
   }
@@ -33,9 +45,43 @@ const Header= ()=>{
     setDialog(false)
   }
 
-  const handleConfirmUpload = ()=>{
-    if(upload){
+  const postSongs = async(data) =>{
+    const usersDb = await openDB("db1",1)
+    usersDb.add("songs",data)
+    const parsed = JSON.parse(loggedInUser)
+    console.log(parsed)
+    usersDb.get("users",parsed.id)
+      .then((response)=>{
+        let arr = [...response.upload]
+        arr.push(data.id)
+        let obj = {
+          id:parsed.id,
+          email:parsed.email,
+          name:parsed.name,
+          password:parsed.password,
+          likedSongs:parsed.likedSongs,
+          upload:arr
+        }
+        usersDb.put("users",obj)
+      })
+  }
 
+  const handleConfirmUpload = ()=>{
+   
+    if(songName===""){
+      toast.warn("song name is required")
+      return
+    }
+    if(upload){
+      const obj = {
+        id:uniqid(),
+        songName:songName,
+        show:!songPrivate,
+        url:audioUrl
+      }
+      console.log(obj)
+      console.log(data.actions.postDashboardActions)
+      postSongs(obj)
       handleClose()
     }
     else{
@@ -43,12 +89,22 @@ const Header= ()=>{
     }
   }
 
+  const handleNameChange = (e)=>{
+    console.log(e.target.value,"value")
+    setSongName(e.target.value)
+  }
+
+  const storeUrl = (data)=>{
+    console.log(data)
+    setAudioUrl(data)
+  }
 
   const handleFileChange = (event)=>{
     if(event.target.files.length===0){
       setUpload(false)
     }
     else{
+      getBase64(event.target.files[0],storeUrl)
       setUpload(true)
     }
   }
@@ -106,7 +162,9 @@ const Header= ()=>{
           </DialogContentText> */}
           {/* <Button icon={<UploadOutlined />}>upload</Button> */}
           <input type="file" accept="audio/mpeg" onChange={handleFileChange}/>
-
+          <form onSubmit={handleConfirmUpload}>
+            <TextField required type="text" name="songName" id="outlined-basic" label="Song name" error={!!songInput} onChange={handleNameChange} helperText={songInput} variant="outlined" />
+          </form>
         </DialogContent>
         <DialogActions>
           <div>
@@ -114,9 +172,11 @@ const Header= ()=>{
           </div>
           <div className="button-container">
             <div className="button" aria-hidden onClick={handleClose}>cancel</div>
-            <div className ="button" aria-hidden onClick={handleConfirmUpload} autoFocus>
+            <div className ="button" type="submit" aria-hidden onClick={handleConfirmUpload} autoFocus>
             upload
             </div>
+
+
           </div>
         </DialogActions>
       </Dialog>

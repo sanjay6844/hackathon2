@@ -6,12 +6,7 @@ const Homepage = () => {
   const { store, actions } = ctx;
   const { getAllRequetUser } = actions;
   const { testData } = store;
-  useEffect(() => {
-    getAllRequetUser();
-  }, []);
-  useEffect(() => {
-    console.log(testData, "items");
-  }, [testData]);
+
   // console.log(ctx, "ctx");
 
   return(

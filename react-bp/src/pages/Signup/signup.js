@@ -29,10 +29,11 @@ const defaultTheme = createTheme();
 function SignUpPage() {
   const ctx = useContext(RefContext);
   const { store, actions } = ctx;
-  const { postUsers } = actions;
+  const { postUsers,fetchUsers } = actions;
   // const { testData } = store;
   
   useEffect(()=>{
+
     openDB("db1", 1, {
       upgrade(db) {
         if (!db.objectStoreNames.contains("users")) {
@@ -40,6 +41,7 @@ function SignUpPage() {
         }
       },
     });
+    fetchUsers()
   },[])
  
   const [nameError, setNameError] = useState("");
@@ -68,15 +70,31 @@ function SignUpPage() {
     setEmailError("");
     setPasswordError("");
     setConfirmPasswordError("");
+    setNameError("")
 
     const data = new FormData(event.currentTarget);
     const name = data.get("name");
     const email = data.get("email");
     const password = data.get("password");
     const confirmPassword = data.get("confirmPassword");
-
-
-
+    let a = 0
+    console.log(store,"store")
+    store.users.map((user)=>{
+      if(user.email===email){
+        setEmailError("User already exist")
+        console.log("iam here")
+        a=1
+        return
+      }
+      if(user.name===name){
+        setNameError("Username not available")
+        a=1
+        return
+      }
+    })
+    if(a==1){
+      return
+    }
     //Valid name
     if (!name) {
       setNameError("UserName is required");
@@ -151,7 +169,7 @@ function SignUpPage() {
     localStorage.setItem("users", JSON.stringify(localData)) 
       
    
-    Cookies.set("currentuser", JSON.stringify(localData), {
+    Cookies.set("currentuser", JSON.stringify(userObj), {
       expires: 7,
     });
     Notification.setPlacement("top");
