@@ -6,7 +6,7 @@ const AuthRoute = ({ Element }) => {
   const acctoken = cookie.load("currentuser");
   console.log(acctoken, "currentuser");
   if (!acctoken || acctoken === undefined) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/" />;
   }
   return Element;
 };
