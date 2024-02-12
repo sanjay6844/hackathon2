@@ -17,15 +17,16 @@ import uniqid from "uniqid";
 import RefContext from "Utilities/refContext";
 import {openDB} from "idb"
 import Cookies from "js-cookie";
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import UploadFileIcon from '@mui/icons-material/UploadFile';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Divider from "@mui/material/Divider";
 import Logout from "@mui/icons-material/Logout";
 import Avatar from "@mui/material/Avatar";
+import { Notification } from "@contentful/f36-notification";
 // import { Button } from "@mui/base";
 import { UploadOutlined } from "@ant-design/icons";
 import { uniqueId } from "lodash";
@@ -34,7 +35,7 @@ import { useNavigate } from "react-router-dom";
 const Header= (data)=>{
   const [dialog,setDialog] = useState(false)
 
-const navigate = useNavigate()
+  const navigate = useNavigate()
   const [audioUrl,setAudioUrl] = useState(null)
   const [upload,setUpload] = useState(false)
   const [songPrivate,setSongPrivate] = useState(false)

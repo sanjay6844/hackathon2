@@ -11,6 +11,7 @@ const initialState = {
   apiError: null,
   testData: null,
   users:null,
+  songs:null,
 };
 
 // ACTIONS
@@ -86,6 +87,22 @@ const fetchUsers = () => async(dispatch) => {
       dispatch(assignToDashboardStore("users", response));
     })
 };
+const fetchSongs = () => async(dispatch) => {
+
+  const usersDB = await openDB("db1",1)
+  usersDB.getAll("songs")
+    .then((response)=>{
+      console.log(response)
+      dispatch(assignToDashboardStore("songs", response));
+    })
+};
+
+
+
+
+
+
+
 
 
 // Routing
@@ -115,6 +132,7 @@ export default {
     getAllRequetUser,
     postUsers,
     fetchUsers,
-    postSongs
+    postSongs,
+    fetchSongs
   },
 };
