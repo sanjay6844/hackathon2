@@ -1,7 +1,7 @@
 // Controllers
 import Home from "Pages/Home";
 import Login from "Pages/Login/login";
-import Signup from "Pages/Signup/signup";
+import Signup from "Pages/Signup";
 import Header from  "Components/Header/Header"
 
 function Injector(component, name) {
