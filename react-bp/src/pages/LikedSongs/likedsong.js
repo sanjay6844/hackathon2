@@ -4,11 +4,21 @@ import "./likedsongStyle.css";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import Divider from "@mui/material/Divider";
-import GraphicEqIcon from '@mui/icons-material/GraphicEq';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import GraphicEqIcon from "@mui/icons-material/GraphicEq";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import RefContext from "Utilities/refContext";
+
 
 function LikedSongs(){
   const [isliked, setLiked] = useState(false)
+  const ctx = useContext(RefContext);
+  const { store, actions } = ctx;
+  const { postUsers,fetchUsers,fetchSongs } = actions;
+  useEffect(()=>{
+    fetchSongs()
+    fetchUsers()
+  },[])
+
   return(
     <div className="LikedsongBody">
       <div className="title">Liked Songs</div>
