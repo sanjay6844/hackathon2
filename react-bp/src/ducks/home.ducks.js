@@ -1,7 +1,7 @@
 import cloneDeep from "lodash/cloneDeep";
 import { setNamespace, setApiError } from "Utilities/helpers";
 import Network from "Utilities/network";
-
+import {openDB} from "idb"
 const namespace = "dashboard";
 const createAction = setNamespace(namespace);
 const nw = new Network();
@@ -10,6 +10,7 @@ const nw = new Network();
 const initialState = {
   apiError: null,
   testData: null,
+  users:null,
 };
 
 // ACTIONS
@@ -62,6 +63,19 @@ const getAllRequetUser = () => (dispatch) => {
     });
 };
 
+
+const postUsers = (data)=>async(dispatch)=>{
+  const usersDb = await openDB("db1",1)
+  usersDb.add("users",data)
+}
+
+
+const postSongs = (data)=>async(dispatch)=>{
+  const usersDb = await openDB("db1",1)
+  usersDb.add("songs",data)
+}
+
+
 const fetchUsers = () => (dispatch) => {
   dispatch(assignToDashboardStore("get_Posts", null));
   return nw
@@ -100,5 +114,7 @@ export default {
     assignToDashboardStore,
     resetDashboardStore,
     getAllRequetUser,
+    postUsers, 
+    postSongs
   },
 };

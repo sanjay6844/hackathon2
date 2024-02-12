@@ -8,5 +8,30 @@
     text-align: center;
 }
 .title{
-    font-size: 30px;
+    font-size: 25px;
+    justify-content:flex-start;
+    display: flex;
+    color:gray;
+    font-weight:400;
+    padding:20px;
+    font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+.likedsongdesign{
+    display:flex;
+    align-items: center;
+   
+}
+.SongTitle{
+    width:50%;
+    font-size: 20px;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+.playbutton{
+    padding-right:90px;
+   
+}
+.likedsonglist{
+    justify-content: flex-start;
+    padding:20px;
+    display: flex;
 }
