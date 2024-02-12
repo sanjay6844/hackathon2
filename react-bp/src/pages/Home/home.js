@@ -1,11 +1,15 @@
 import React, { useContext, useEffect } from "react";
 import RefContext from "Utilities/refContext";
+import "./home.css"
 
 const Homepage = () => {
   const ctx = useContext(RefContext);
   const { store, actions } = ctx;
-  const { getAllRequetUser } = actions;
-  const { testData } = store;
+  
+  
+  useEffect(()=>{
+
+  })
 
   // console.log(ctx, "ctx");
 
@@ -13,15 +17,8 @@ const Homepage = () => {
 
     //  <h1>Home Page</h1>;
     //enable this if need to use DB json
-    <div>
-      {testData && testData.map((dataValue, index) => {
-        return (
-          <div key={index}>
-            <h3> Title :{dataValue.title}</h3>
-            <h5>Tags :{dataValue.tags}</h5>
-          </div>
-        )
-      })}
+    <div className="home-container">
+      
     </div>
   )
 };

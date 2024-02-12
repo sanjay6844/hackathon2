@@ -39,6 +39,7 @@ function SignUpPage() {
         if (!db.objectStoreNames.contains("users")) {
           db.createObjectStore("users", { keyPath: "id"});
         }
+        
       },
     });
     fetchUsers()
