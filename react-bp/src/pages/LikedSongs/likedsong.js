@@ -4,7 +4,9 @@ import "./likedsongStyle.css"
 
 function LikedSongs(){
   return(
-    <div className="LikedsongBody">liked songs</div>
+    <div className="LikedsongBody">
+      <div className="title">Liked songs</div>
+    </div>
   );
-};
+}
 export default LikedSongs
