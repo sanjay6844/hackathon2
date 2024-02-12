@@ -8,6 +8,8 @@ import GraphicEqIcon from "@mui/icons-material/GraphicEq";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import RefContext from "Utilities/refContext";
 import Cookies from "js-cookie";
+import ReactAudioPlayer from "react-audio-player";
+
 
 
 function LikedSongs(){
@@ -15,6 +17,9 @@ function LikedSongs(){
   const ctx = useContext(RefContext);
   const { store, actions } = ctx;
   const { postUsers,fetchUsers,fetchSongs } = actions;
+  const [song, setsong] = useState(null);
+  const [name, setname]= useState(null);
+
   const LoggedInUser = Cookies.get("currentuser")
   useEffect(()=>{
     fetchSongs()
@@ -22,6 +27,10 @@ function LikedSongs(){
   },[])
   const likedSongs = ["lsitpo81","lsiu6yak"]
   let loggedInUser = JSON.parse(LoggedInUser)
+  const storesongDetail = (url,name) =>{
+    setsong(url);
+    setname(name);
+  }
   const showLikedSongs = ()=>{
     // const likedSongs = loggedInUser.likedSongs
    
@@ -55,6 +64,14 @@ function LikedSongs(){
   return(
     <div className="LikedsongBody">
       {/* {showLikedSongs()} */}
+      <div className="audioplay">
+        <div style={{color:"white", paddingBottom:"15px", fontSize:"30px"}}>Song Name: {name}</div>
+        <ReactAudioPlayer style={{width:"100%"}}
+          src={song}
+          controls
+          autoPlay
+        />
+      </div>
       { store.songs?.map((song,key)=>{
         if(likedSongs.includes(song.id)&&song.show){
           return(
@@ -62,14 +79,12 @@ function LikedSongs(){
               <div className="likedsongdesign">
                 <div className="likedsonglist"><MusicNoteIcon style={{padding:"10px", borderRadius:"25px", border:"1px solid gray", fontSize:"20px",color:"white", background:"#9147ff"}} /></div>
                 <div className="SongTitle">{song.songName}</div>
-                <div className="playbutton"><PlayArrowIcon style={{fontSize:"40px", cursor:"pointer"}} /></div>
+                <div className="playbutton"><PlayArrowIcon style={{fontSize:"40px", cursor:"pointer"}} onClick={() => storesongDetail(song.url, song.songName) }/></div>
                 <div><FavoriteIcon  onClick={() => setLiked(true)} style={{color: isliked ? "black" : "red", fontSize:"30px",cursor:"pointer"}} /></div>
                 <Divider />
               </div>
             </div>
           )
-         
-
         }
       })}
     </div>
