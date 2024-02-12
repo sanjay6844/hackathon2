@@ -5,7 +5,6 @@ import { formStoreData } from "Utilities/helpers";
 import Homepage from "./home";
 import {} from "react-router-dom";
 
-
 const Home = (props) => {
   const propShape = formStoreData(props, ["dashboard"]);
   return (
