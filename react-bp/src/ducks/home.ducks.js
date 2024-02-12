@@ -71,10 +71,6 @@ const postUsers = (data)=>async(dispatch)=>{
 }
 
 
-const postSongs = (data)=>async(dispatch)=>{
-  const usersDb = await openDB("db1",1)
-  usersDb.add("songs",data)
-}
 
 
 
@@ -132,7 +128,7 @@ export default {
     getAllRequetUser,
     postUsers,
     fetchUsers,
-    postSongs,
+    
     fetchSongs
   },
 };
