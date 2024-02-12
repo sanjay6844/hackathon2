@@ -3,7 +3,7 @@ import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import {PrivateRoute,AuthRoute} from "./authRoute"
 
 const fetchRoutes = (containers) => {
-  const { Home, Login, Signup,Header } = containers;
+  const { Home, Login, Signup, LikeSong,Header } = containers;
 
   return function Routes() {
     const Layout = () => (
@@ -33,6 +33,10 @@ const fetchRoutes = (containers) => {
             {
               path: "/home",
               element: <AuthRoute Element={<Home />} />,
+            },
+            {
+              path: "/likedsongs",
+              element: <AuthRoute Element={<LikeSong />} />,
             },
           ],
         },

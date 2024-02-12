@@ -189,7 +189,7 @@ function SignUpPage() {
               marginTop: 8,
               display: "flex",
               padding:"30px",
-              boxShadow: "rgba(0, 0, 0, 0.15) 0px 2px 8px",
+              boxShadow: "rgba(0, 0, 0 0.15) 0px 2px, 8px",
               flexDirection: "column",
               alignItems: "center",
               backgroundColor:"white",

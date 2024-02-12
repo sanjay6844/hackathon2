@@ -17,17 +17,24 @@ import uniqid from "uniqid";
 import RefContext from "Utilities/refContext";
 import {openDB} from "idb"
 import Cookies from "js-cookie";
-
-
-
-
-
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import Divider from "@mui/material/Divider";
+import Logout from "@mui/icons-material/Logout";
+import Avatar from "@mui/material/Avatar";
 // import { Button } from "@mui/base";
 import { UploadOutlined } from "@ant-design/icons";
 import { uniqueId } from "lodash";
 // import { Button, message, Upload } from "antd";
+import { useNavigate } from "react-router-dom";
 const Header= (data)=>{
   const [dialog,setDialog] = useState(false)
+
+const navigate = useNavigate()
   const [audioUrl,setAudioUrl] = useState(null)
   const [upload,setUpload] = useState(false)
   const [songPrivate,setSongPrivate] = useState(false)
@@ -40,7 +47,20 @@ const Header= (data)=>{
   },[])
   const handleUpload = ()=>{
     setDialog(true)
+   
   }
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
+  const handleLogOut =()=>{
+    
+    setAnchorEl(null);
+    navigate("/")
+    Cookies.remove("currentuser")
+    Notification.setPlacement("top");
+    Notification.success("Signed-Out Successfully!",{ duration: 5000},);
+  }
+
   const handleClose = ()=>{
     setDialog(false)
   }
@@ -80,7 +100,6 @@ const Header= (data)=>{
         url:audioUrl
       }
       console.log(obj)
-      console.log(data.actions.postDashboardActions)
       postSongs(obj)
       handleClose()
     }
@@ -98,8 +117,18 @@ const Header= (data)=>{
     console.log(data)
     setAudioUrl(data)
   }
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+    // setCurrentPage(null)
+  };
+
+  const handleClosed =()=>{
+    setAnchorEl(null)
+  }
 
   const handleFileChange = (event)=>{
+   
+   
     if(event.target.files.length===0){
       setUpload(false)
     }
@@ -113,6 +142,7 @@ const Header= (data)=>{
     const reader = new FileReader();
     reader.addEventListener("load", () => callback(reader.result));
     reader.readAsDataURL(audio);
+    console.log(audio, "audio")
   };
 
   const handleSwitch=(event)=>{
@@ -142,7 +172,8 @@ const Header= (data)=>{
   //   },
   // };
 
-
+  const cookieValues = JSON.parse(Cookies.get("currentuser"))
+  console.log(cookieValues, "cook")
   return(
     <div className="header-container">
       <Dialog
@@ -181,16 +212,68 @@ const Header= (data)=>{
         </DialogActions>
       </Dialog>
       <div className="name-container"> 
-        <div className="heading">song player</div>
+        <div className="heading">SanSham Audio Player</div>
       </div>
       <div className="routes">
-        <div className="button">Home</div>
-        <div className="button">liked songs</div>
+        <div className="button" onClick={() => navigate("/home")}>Home</div>
+        <div className="button" onClick={() => navigate("/likedsongs")}><FavoriteIcon /></div>
         <div className="button" aria-hidden onClick={handleUpload}>
-          <div>upload</div>
-          <div className="icon-container
-          "><AddIcon sx={{width:"20px"}}/></div>
+          <UploadFileIcon />
         </div>
+        <div className="button" aria-hidden onClick={(e)=>handleClick(e)}>
+          <AccountCircleIcon />
+        </div>
+        <Menu
+          anchorEl={anchorEl}
+          id="account-menu"
+          open={open}
+          onClose={handleClosed}
+          onClick={handleClosed}
+          PaperProps={{
+            elevation: 0,
+            sx: {
+              overflow: "visible",
+              filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+              mt: 1.5,
+              "& .MuiAvatar-root":{
+                width: 32,
+                height: 32,
+                ml: -0.5,
+                mr: 1,
+              },
+              "&::before": {
+                content: "\"\"",
+                display: "block",
+                position: "absolute",
+                top: 0,
+                right: 14,
+                width: 10,
+                height: 10,
+                bgcolor: "background.paper",
+                transform: "translateY(-50%) rotate(45deg)",
+                zIndex: 0,
+              },
+            },
+          }}
+          transformOrigin={{ horizontal: "right", vertical: "top" }}
+          anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+        >
+
+            
+          <MenuItem>
+            <Avatar /> {cookieValues?.name}
+          </MenuItem>
+          <Divider />
+            
+           
+     
+          <MenuItem onClick={handleLogOut}>
+            <ListItemIcon>
+              <Logout fontSize="small" />
+            </ListItemIcon>
+          Logout
+          </MenuItem>
+        </Menu>
       </div>
     </div>
   )
