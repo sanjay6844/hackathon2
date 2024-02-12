@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect,useContext } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -19,11 +19,28 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { Notification } from "@contentful/f36-notification";
 import "./signupStyle.css"
+import { openDB } from "idb";
+import uniqid from "uniqid";
+import RefContext from "Utilities/refContext";
+
 
 const defaultTheme = createTheme(); 
 
-function Signup() {
+function SignUpPage() {
+  const ctx = useContext(RefContext);
+  const { store, actions } = ctx;
+  const { postUsers } = actions;
+  // const { testData } = store;
   
+  useEffect(()=>{
+    openDB("db1", 1, {
+      upgrade(db) {
+        if (!db.objectStoreNames.contains("users")) {
+          db.createObjectStore("users", { keyPath: "id"});
+        }
+      },
+    });
+  },[])
  
   const [nameError, setNameError] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -115,9 +132,12 @@ function Signup() {
     
 
     const userObj={
+      id:uniqid(),
       name:name,
       email:email,
       password:password,
+      likedSongs:[],
+      upload:[]
     }
 
     
@@ -136,6 +156,7 @@ function Signup() {
     });
     Notification.setPlacement("top");
     Notification.success("Signed in  successfully!",{ duration: 5000},)
+    postUsers(userObj)
     navigate("/home")
     
   }
@@ -262,4 +283,4 @@ function Signup() {
     </div>
   );
 }
-export default Signup
+export default SignUpPage
