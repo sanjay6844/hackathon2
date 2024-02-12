@@ -76,16 +76,15 @@ const postSongs = (data)=>async(dispatch)=>{
 }
 
 
-const fetchUsers = () => (dispatch) => {
-  dispatch(assignToDashboardStore("get_Posts", null));
-  return nw
-  
-    .then((response) => {
-      dispatch(assignToDashboardStore("testData", response?.data));
+
+const fetchUsers = () => async(dispatch) => {
+
+  const usersDB = await openDB("db1",1)
+  usersDB.getAll("users")
+    .then((response)=>{
+      console.log(response)
+      dispatch(assignToDashboardStore("users", response));
     })
-    .catch((error) => {
-      setApiError(dispatch, assignToDashboardStore, error);
-    });
 };
 
 
@@ -114,7 +113,8 @@ export default {
     assignToDashboardStore,
     resetDashboardStore,
     getAllRequetUser,
-    postUsers, 
+    postUsers,
+    fetchUsers,
     postSongs
   },
 };

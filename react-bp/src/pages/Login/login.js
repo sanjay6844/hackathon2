@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState,useContext,useEffect } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -22,6 +22,10 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { Notification } from "@contentful/f36-notification";
 import "./loginStyle.css";
+import { openDB } from "idb";
+import RefContext from "Utilities/refContext";
+
+
 // import ModalForm from "../../components/Modal";
 // import {
 //   Modal,
@@ -31,12 +35,10 @@ import "./loginStyle.css";
 // } from "@contentful/f36-components";
 
 const defaultTheme = createTheme();
-function Login() {
-
-
-
- 
-  
+function LoginPage() {
+  const ctx = useContext(RefContext);
+  const { store, actions } = ctx;
+  const { fetchUsers } = actions;
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -53,7 +55,23 @@ function Login() {
 
 
  
+  useEffect(()=>{
 
+    openDB("db1", 1, {
+      upgrade(db) {
+        console.log("hi 1")
+        if (!db.objectStoreNames.contains("users")) {
+          db.createObjectStore("users", { keyPath: "id"});
+        }
+        if(!db.objectStoreNames.contains("songs")){
+          console.log("Hi")
+          db.createObjectStore("songs",{keyPath:"id"})
+        }
+      },
+    });
+    fetchUsers()
+    
+  },[])
  
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -65,7 +83,23 @@ function Login() {
     const data = new FormData(event.currentTarget);
     const email = data.get("email");
     const password = data.get("password");
-
+    let  a= 0;
+    store.users.map((user)=>{
+      if(user.email===email){
+        console.log("iam here")
+        a=1
+        return
+      }
+      if(user.name===email){
+        a=1
+        return
+      }
+    })
+    if(a==0){
+      setEmailError("User does'nt exist")
+      return
+    }
+    
     // Validate email
     if (!email) {
       setEmailError("Email or Username is required");
@@ -190,7 +224,7 @@ function Login() {
                   required
                   fullWidth
                   id="email"
-                  label="Email Address or Uername"
+                  label="Email Address or Username"
                   name="email"
                   autoComplete="email"
                   autoFocus
@@ -390,4 +424,4 @@ function Login() {
     </>
   );
 }
-export default Login;
+export default LoginPage;

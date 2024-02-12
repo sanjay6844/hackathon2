@@ -1,5 +1,5 @@
-import React from "react";
-import { useState, useContext } from "react";
+import React, { useEffect } from "react";
+import { useState,useContext } from "react";
 import "./Header.css"
 import AddIcon from "@mui/icons-material/Add";
 import Dialog from "@mui/material/Dialog";
@@ -12,45 +12,46 @@ import { ToastContainer,toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Switch from "@mui/material/Switch";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { useNavigate } from "react-router-dom";
-import UploadFileIcon from "@mui/icons-material/UploadFile";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { TextField } from "@mui/material";
+import uniqid from "uniqid";
+import RefContext from "Utilities/refContext";
+import {openDB} from "idb"
+import Cookies from "js-cookie";
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Divider from "@mui/material/Divider";
 import Logout from "@mui/icons-material/Logout";
 import Avatar from "@mui/material/Avatar";
-import { Notification } from "@contentful/f36-notification";
-import RefContext from "Utilities/refContext";
-
 // import { Button } from "@mui/base";
 import { UploadOutlined } from "@ant-design/icons";
-import Cookies from "js-cookie";
+import { uniqueId } from "lodash";
 // import { Button, message, Upload } from "antd";
-const Header= (props)=>{
-
-  const ctx = useContext(RefContext);
-  console.log(props, "context")
-  const { store, actions } = props;
-  const { postSongs } = actions;
+import { useNavigate } from "react-router-dom";
+const Header= (data)=>{
   const [dialog,setDialog] = useState(false)
+
+const navigate = useNavigate()
   const [audioUrl,setAudioUrl] = useState(null)
   const [upload,setUpload] = useState(false)
   const [songPrivate,setSongPrivate] = useState(false)
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [songs, setSongs] = useState(null)
-  const navigate=useNavigate();
-  const  handleUpload = ()=>{
+  const [songInput,setSongInput] = useState("")
+  const [songName,setSongName] = useState("")
+  const loggedInUser = Cookies.get("currentuser")
+
+  useEffect(()=>{
+    console.log(data)
+  },[])
+  const handleUpload = ()=>{
     setDialog(true)
    
   }
-  const handleClose = ()=>{
-    setDialog(false)
-  }
- 
-
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
   const handleLogOut =()=>{
     
     setAnchorEl(null);
@@ -60,17 +61,62 @@ const Header= (props)=>{
     Notification.success("Signed-Out Successfully!",{ duration: 5000},);
   }
 
-  const handleConfirmUpload = () => {
-    if (upload) {
-      getBase64(songs)
-      handleClose();
-    } else {
-      toast.warn("No file chosen");
-    }
-  };
+  const handleClose = ()=>{
+    setDialog(false)
+  }
 
-  const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
+  const postSongs = async(data) =>{
+    const usersDb = await openDB("db1",1)
+    usersDb.add("songs",data)
+    const parsed = JSON.parse(loggedInUser)
+    console.log(parsed)
+    usersDb.get("users",parsed.id)
+      .then((response)=>{
+        let arr = [...response.upload]
+        arr.push(data.id)
+        let obj = {
+          id:parsed.id,
+          email:parsed.email,
+          name:parsed.name,
+          password:parsed.password,
+          likedSongs:parsed.likedSongs,
+          upload:arr
+        }
+        usersDb.put("users",obj)
+      })
+  }
+
+  const handleConfirmUpload = ()=>{
+   
+    if(songName===""){
+      toast.warn("song name is required")
+      return
+    }
+    if(upload){
+      const obj = {
+        id:uniqid(),
+        songName:songName,
+        show:!songPrivate,
+        url:audioUrl
+      }
+      console.log(obj)
+      postSongs(obj)
+      handleClose()
+    }
+    else{
+      toast.warn("no file choosen")
+    }
+  }
+
+  const handleNameChange = (e)=>{
+    console.log(e.target.value,"value")
+    setSongName(e.target.value)
+  }
+
+  const storeUrl = (data)=>{
+    console.log(data)
+    setAudioUrl(data)
+  }
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
     // setCurrentPage(null)
@@ -81,12 +127,13 @@ const Header= (props)=>{
   }
 
   const handleFileChange = (event)=>{
-    setSongs(event.target.files)
+   
    
     if(event.target.files.length===0){
       setUpload(false)
     }
     else{
+      getBase64(event.target.files[0],storeUrl)
       setUpload(true)
     }
   }
@@ -146,7 +193,9 @@ const Header= (props)=>{
           </DialogContentText> */}
           {/* <Button icon={<UploadOutlined />}>upload</Button> */}
           <input type="file" accept="audio/mpeg" onChange={handleFileChange}/>
-
+          <form onSubmit={handleConfirmUpload}>
+            <TextField required type="text" name="songName" id="outlined-basic" label="Song name" error={!!songInput} onChange={handleNameChange} helperText={songInput} variant="outlined" />
+          </form>
         </DialogContent>
         <DialogActions>
           <div>
@@ -154,9 +203,11 @@ const Header= (props)=>{
           </div>
           <div className="button-container">
             <div className="button" aria-hidden onClick={handleClose}>cancel</div>
-            <div className ="button" aria-hidden onClick={handleConfirmUpload} autoFocus>
+            <div className ="button" type="submit" aria-hidden onClick={handleConfirmUpload} autoFocus>
             upload
             </div>
+
+
           </div>
         </DialogActions>
       </Dialog>

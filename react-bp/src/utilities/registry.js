@@ -1,6 +1,6 @@
 // Controllers
 import Home from "Pages/Home";
-import Login from "Pages/Login/login";
+import Login from "Pages/Login";
 import Signup from "Pages/Signup";
 import Header from  "Components/Header/Header";
 import LikeSong from "Pages/LikedSongs";
