@@ -59,12 +59,18 @@ function LoginPage() {
 
     openDB("db1", 1, {
       upgrade(db) {
+        console.log("hi 1")
         if (!db.objectStoreNames.contains("users")) {
           db.createObjectStore("users", { keyPath: "id"});
+        }
+        if(!db.objectStoreNames.contains("songs")){
+          console.log("Hi")
+          db.createObjectStore("songs",{keyPath:"id"})
         }
       },
     });
     fetchUsers()
+    
   },[])
  
   const handleSubmit = (event) => {

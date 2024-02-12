@@ -169,7 +169,7 @@ function SignUpPage() {
     localStorage.setItem("users", JSON.stringify(localData)) 
       
    
-    Cookies.set("currentuser", JSON.stringify(localData), {
+    Cookies.set("currentuser", JSON.stringify(userObj), {
       expires: 7,
     });
     Notification.setPlacement("top");
