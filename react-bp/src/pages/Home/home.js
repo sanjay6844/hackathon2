@@ -50,19 +50,19 @@ const Homepage = () => {
           />
         </div>
         <div className="title">Playlist</div>
-        {songs?.map((song,index) => {
-          if(LoggedInUser.upload.includes(song.id)&&song.show){
-            return(
-              <>
-                <div key={index} className="likedsongdesign">
-                  <div className="likedsonglist"><MusicNoteIcon style={{padding:"10px", borderRadius:"25px", border:"1px solid gray", fontSize:"20px",color:"white", background:"#9147ff"}} /></div>
-                  <div className="SongTitle">{song.songName}</div>
-                  <div className="playbutton"><PlayArrowIcon style={{fontSize:"40px", cursor:"pointer"}} onClick={() => storesongDetail(song.url, song.songName) } /></div>
-                  <div><FavoriteIcon  onClick={() => setLiked(true)} style={{color: isliked ? "red" : "black", fontSize:"30px",cursor:"pointer"}} /></div>
-                </div> 
-                <Divider />
-              </> 
-            )}}
+        {songs?.map((song,index) => 
+          
+          
+          <>
+            <div key={index} className="likedsongdesign">
+              <div className="likedsonglist"><MusicNoteIcon style={{padding:"10px", borderRadius:"25px", border:"1px solid gray", fontSize:"20px",color:"white", background:"#9147ff"}} /></div>
+              <div className="SongTitle">{song.songName}</div>
+              <div className="playbutton"><PlayArrowIcon style={{fontSize:"40px", cursor:"pointer"}} onClick={() => storesongDetail(song.url, song.songName) } /></div>
+              <div><FavoriteIcon  onClick={() => setLiked(true)} style={{color: isliked ? "red" : "black", fontSize:"30px",cursor:"pointer"}} /></div>
+            </div> 
+            <Divider />
+          </> 
+            
         )}
         
       </div>
